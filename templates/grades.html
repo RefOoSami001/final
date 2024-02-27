@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='grades.css') }}">
+    <title>Grades</title>
+</head>
+<body>
+    <h1>مساء الخير يا {{ name }}</h1>
+    <table border="1">
+        <tr>
+            <th>النسبة المئوية</th>
+            <th>درجتك</th>
+            <th>الدرجة النهائية</th>
+            <th>التقدير</th>
+            <th>المادة</th>
+        </tr>
+        {% for grade in grades %}
+        <tr>
+            <td>{{ grade.percentage }}%</td>
+            <td>{{ grade.total_score }}</td>
+            <td>{{ grade.max_score }}</td>
+            <td>{{ grade.grade }}</td>
+            <td>{{ grade.course_name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h1>النسبة المئويه: {{ percentage }}</h1>
+</body>
+</html>

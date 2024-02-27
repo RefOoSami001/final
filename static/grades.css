@@ -1,0 +1,38 @@
+body {
+    font-family: 'Cairo', sans-serif;
+    background: url('https://images.pexels.com/photos/419635/notebook-empty-design-paper-419635.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') center center/cover no-repeat;
+    color: #333; /* Text color */
+    height: 100vh; /* Set the height to 100% of the viewport height */
+}
+
+/* Styles for the grades table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #45a049; /* Green background color */
+    color: white; /* White text color */
+    font-weight: bold; /* Bold font */
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+tr {
+    background-color: #fff;
+}
+
+/* Custom styles for other elements */
+h1 {
+    color: #333;
+    text-align: center;
+    margin-top: 20px;
+}

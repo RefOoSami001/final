@@ -1,0 +1,148 @@
+body {
+    font-family: 'Cairo', sans-serif;
+    background: url('https://images.pexels.com/photos/419635/notebook-empty-design-paper-419635.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') center center/cover no-repeat;
+    color: #333; /* Text color */
+    height: 100vh; /* Set the height to 100% of the viewport height */
+}
+
+.title {
+    font-size: 30px;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+}
+
+form {
+    backdrop-filter: blur(10px); /* Increase blur intensity for a stronger glass effect */
+    margin: 0 auto;
+    max-width: 400px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.5); /* Adjust opacity for a subtle frosted effect */
+    border-radius: 10px;
+    box-shadow: 0 15px 25px rgba(129, 124, 124, 0.2); /* Added shadow */
+    transition: box-shadow 0.3s; /* Added transition for shadow */
+}
+
+form:hover {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Increased shadow on hover */
+}
+
+input[type="text"],
+input[type="password"],
+select {
+    height: 48px; /* Set the height to match other input elements */
+    padding: 5px 10px;
+    margin: 8px 0;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    appearance: none; /* Remove default arrow icon */
+    -webkit-appearance: none; /* Safari and Chrome */
+    -moz-appearance: none; /* Firefox */
+    font-family: "Cairo", sans-serif;
+    transition: border-color 0.3s; /* Added transition for border color */
+}
+
+/* Add hover effect */
+select:hover {
+    border-color: #aaa;
+}
+
+/* Add focus effect */
+select:focus,
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Style the dropdown arrow icon */
+select::after {
+    content: '\25BC'; /* Unicode character for down arrow */
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    color: #555;
+    pointer-events: none; /* Prevent click on the arrow */
+}
+
+/* Style select options */
+select option {
+    background-color: #fff; /* Background color */
+    color: #333; /* Text color */
+    font-size: 16px; /* Font size */
+}
+input[type="submit"] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: "Cairo", sans-serif;
+    font-size: 20px;
+    transition: background-color 0.3s; /* Added transition for background color */
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.error-messages {
+    margin-top: 5px;
+    text-align: center; /* Center the error messages */
+}
+
+.error-message {
+    color: #ff0000; /* Red color for error messages */
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+.password-container {
+    position: relative;
+}
+
+#password {
+    padding-right: 40px; /* Adjust the padding to accommodate the icon */
+}
+
+#togglePassword {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+.telegram-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+}
+
+.telegram-icon {
+    font-size: 40px; /* Make the Telegram icon bigger */
+    color: #0088cc; /* Change the color of the Telegram icon */
+    text-decoration: none; /* Remove underline */
+    cursor: pointer;
+}
+.flash-messages {
+    list-style-type: none;
+    padding: 10px;
+    margin: 0;
+    background-color: #f44336; /* Red background color */
+    color: white; /* White text color */
+    border-radius: 5px; /* Rounded corners */
+    opacity: 1; /* Initially visible */
+    transition: opacity 1s ease-in-out; /* Fade out transition */
+}
+
+.flash-messages li {
+    margin-bottom: 5px;
+}
