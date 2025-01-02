@@ -107,7 +107,6 @@ form {
     display: block;
     margin: 0;
     padding: 0 0.8em 0;
-    padding: .875em 1em 0;
     background-color: #f3fafd;
     border: solid 2px #217093;
     border-radius: 4px;
@@ -142,8 +141,8 @@ form {
     height: 50px;
     font-size: 1.55em;
     color: #FFF;
-    font-weight: 600;
-    font-family: 'inherit', sans-serif;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
     transition: background-color .2s ease-out;
   }
   form button:hover,
@@ -153,7 +152,7 @@ form {
   form .inputGroup1 .helper {
     position: absolute;
     z-index: 1;
-    font-family: inherit;
+    font-family: 'Cairo', sans-serif;
   }
   form .inputGroup1 .helper1 {
     top: 0;
@@ -171,11 +170,11 @@ form {
     transform: translate(1em, 1.55em) scale(.6);
     opacity: 1;
   }
-  form .inputGroup2 input[type="password"] {
-    padding: .4em 1em .5em;
-  }
   form .inputGroup1 input[type="text"] {
-    padding: .4em 1em .5em;
+    padding: .5em 1em .5em;
+  }
+  form .inputGroup2 input[type="password"] {
+    padding: .5em 1em 0.5em;
   }
 
 
@@ -185,7 +184,7 @@ form {
     flex-direction: row;
     justify-content: space-between;
     font-size: 0.8rem;
-    font-family: 'inherit', sans-serif;
+    font-family: 'Cairo', sans-serif;
     
     
 }
@@ -264,7 +263,7 @@ form {
     content: "";
     position: absolute;
     left: .25em;
-    top: .025em;
+    top: .095em;
     width: .2em;
     height: .5em;
     border: solid #217093;
@@ -293,4 +292,45 @@ form {
     text-decoration: none;
     color: #217093; /* Your preferred color */
     transition: color 0.3s, transform 0.3s;
+}
+#loading-indicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #A9DDF3, #DDF1FA);
+  color: #000000;
+  padding: 30px 40px;
+  border-radius: 15px;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  font-family: 'Cairo', sans-serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.spinner {
+  margin: 20px auto;
+  border: 6px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #000000;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg);
+  }
+}
+
+#loading-indicator p {
+  margin: 10px 0 0;
+  font-size: 16px;
+  font-weight: bold;
 }
