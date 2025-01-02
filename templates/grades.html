@@ -1,31 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='grades.css') }}">
     <title>Grades</title>
 </head>
 <body>
-    <h1>مساء الخير يا {{ name }}</h1>
-    <table border="1">
-        <tr>
-            <th>النسبة المئوية</th>
-            <th>درجتك</th>
-            <th>الدرجة النهائية</th>
-            <th>التقدير</th>
-            <th>المادة</th>
-        </tr>
-        {% for grade in grades %}
-        <tr>
-            <td>{{ grade.percentage }}%</td>
-            <td>{{ grade.total_score }}</td>
-            <td>{{ grade.max_score }}</td>
-            <td>{{ grade.grade }}</td>
-            <td>{{ grade.course_name }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    <h1>النسبة المئويه: {{ percentage }}</h1>
+    <div id="particles-js"></div>
+    <div class="container">
+        <table class="styled-table" id="grades-table">
+            <thead>
+                <tr>
+                    <th colspan="5" class="to-be-rounded">
+                        <div class="header-content">
+                            <h2>ازيك يا {{ name }}❤️👋</h2>
+                            <button id="download-btn">تنزيل النتيجة😉✨</button>
+                            </div>
+                        <h3>النسبة المئوية الكلية: {{ percentage }}%</h3>
+                    </th>
+                </tr>
+                <tr>
+                    <th>المادة</th>
+                    <th>النسبة المئوية</th>
+                    <th>درجتك</th>
+                    <th>التقدير</th>
+                    <th>الدرجة النهائيه</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for grade in grades %}
+                <tr>
+                    <td>{{ grade.course_name }}</td>
+                    <td>{{ grade.percentage }}%</td>
+                    <td>{{ grade.total_score }}</td>
+                    <td>{{ grade.grade }}</td>
+                    <td>{{ grade.max_score }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5" style="text-align: center; font-style: bold; color: #000000;">
+                        By RefOo Sami ❤️
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 100,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"]
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    }
+                },
+                "opacity": {
+                    "value": 0.6,
+                    "anim": {
+                        "enable": true,
+                        "speed": 1,
+                        "opacity_min": 0.3
+                    }
+                },
+                "size": {
+                    "value": 4,
+                    "random": true
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "bottom",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out"
+                }
+            },
+            "interactivity": {
+                "events": {
+                    "onhover": {
+                        "enable": false
+                    },
+                    "onclick": {
+                        "enable": false
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Enhanced confetti settings
+            const confettiSettings = {
+                particleCount: 1000, // Increase the number of particles
+                spread: 160, // Wider spread
+                startVelocity: 70, // Faster initial velocity
+                decay: 0.9, // Slower decay for longer-lasting confetti
+                origin: { y: 0.5 }, // Origin point for confetti
+                colors: [
+                    '#ff0', '#0f0', '#00f', '#f00', '#ff0', '#217093', // Original colors
+                    '#ff1493', '#00ffff', '#ffa500', '#800080', '#ff4500', '#7fff00', // New vibrant colors
+                    '#00ff7f', '#ff69b4', '#8a2be2', '#ffd700', '#00ced1', '#ff6347' // More colors
+                ],
+                shapes: ['circle', 'square'], // Add different shapes
+                gravity: 0.5, // Adjust gravity for a more natural fall
+                ticks: 200, // Increase the duration of the confetti
+                disableForReducedMotion: true // Respect user preferences for reduced motion
+            };
+
+            // Fire confetti when the page loads
+            confetti(confettiSettings);
+
+            // Download table as image
+            document.getElementById('download-btn').addEventListener('click', function() {
+                html2canvas(document.getElementById('grades-table')).then(function(canvas) {
+                    let link = document.createElement('a');
+                    link.download = 'درجاتي-By Raafat Sami.png';
+                    link.href = canvas.toDataURL();
+                    link.click();
+                });
+            });
+        });
+    </script>
 </body>
 </html>
