@@ -71,6 +71,7 @@ def get_grades():
                 }
 
                 response = requests.post('http://stda.minia.edu.eg/PortalgetJCI', headers=headers, cookies=cookies, data=data, verify=False)
+                
                 response_json = response.json()
                 grades = []
                 max_degrees = 0
@@ -97,28 +98,32 @@ def get_grades():
 
                 for entry in response_json:
                     if selected_year in entry['ScopeName']:
-                        for course in entry['ds'][0]['StudyYearCourses']:
-                            course_name = course['CourseName'].replace("||", '')
-                            max_score = course['Max']
-                            total_score = course['Total']
-                            grade_name = course["GradeName"].split("|")[0]
-                            
-                            if total_score:  # Check if total score is not empty
-                                percentage = (float(total_score) / float(max_score)) * 100
-                            else:
-                                percentage = 0
-                                total_score = 0
-                                grade_name = "غير معروف"
-                            max_degrees+= float(max_score)
-                            total_degrees+= float(total_score)
+                        try:
+                            for course in entry['ds'][0]['StudyYearCourses']:
+                                course_name = course['CourseName'].replace("||", '')
+                                max_score = course['Max']
+                                total_score = course['Total']
+                                grade_name = course["GradeName"].split("|")[0]
+                                
+                                if total_score:  # Check if total score is not empty
+                                    percentage = (float(total_score) / float(max_score)) * 100
+                                else:
+                                    percentage = 0
+                                    total_score = 0
+                                    grade_name = "غير معروف"
+                                max_degrees+= float(max_score)
+                                total_degrees+= float(total_score)
 
-                            grades.append({
-                                'course_name': course_name,
-                                'grade': grade_name,
-                                'max_score': max_score,
-                                'total_score': total_score,
-                                'percentage': int(percentage)
-                            })
+                                grades.append({
+                                    'course_name': course_name,
+                                    'grade': grade_name,
+                                    'max_score': max_score,
+                                    'total_score': total_score,
+                                    'percentage': int(percentage)
+                                })
+                        except: 
+                            flash("تم تظهر النتيجة بعد حاول مرة اخري لاحقا!")
+                            return redirect(url_for('index'))
                 percentage = float(total_degrees/max_degrees)*100
                 formatted_percentage = "{:.2f}".format(percentage)
                 
