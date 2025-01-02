@@ -111,10 +111,10 @@
             // Enhanced confetti settings
             const confettiSettings = {
                 particleCount: 1000, // Increase the number of particles
-                spread: 160, // Wider spread
-                startVelocity: 70, // Faster initial velocity
+                spread: 80, // Wider spread
+                startVelocity: 60, // Faster initial velocity
                 decay: 0.9, // Slower decay for longer-lasting confetti
-                origin: { y: 0.5 }, // Origin point for confetti
+                origin: { y: 1 }, // Start from the bottom of the screen
                 colors: [
                     '#ff0', '#0f0', '#00f', '#f00', '#ff0', '#217093', // Original colors
                     '#ff1493', '#00ffff', '#ffa500', '#800080', '#ff4500', '#7fff00', // New vibrant colors
@@ -122,7 +122,7 @@
                 ],
                 shapes: ['circle', 'square'], // Add different shapes
                 gravity: 0.5, // Adjust gravity for a more natural fall
-                ticks: 200, // Increase the duration of the confetti
+                ticks: 250, // Increase the duration of the confetti
                 disableForReducedMotion: true // Respect user preferences for reduced motion
             };
 
