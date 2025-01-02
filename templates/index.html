@@ -12,6 +12,10 @@
 
 </head>
 <body>
+    <div id="loading-indicator" style="display: none;">
+        <div class="spinner"></div>
+        <p>جارٍ تحميل النتيجة...</p>
+    </div>
     <div id="particles-js"></div>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -22,7 +26,7 @@
             </ul>
         {% endif %}
     {% endwith %}
-    <form action="/grades" method="post">
+    <form id="grades-form" action="/grades" method="post">
         <div class="svgContainer">
             <div>
                 <svg class="mySVG" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 200">
@@ -160,6 +164,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/plugins/MorphSVGPlugin.min.js"></script>
     <!-- Bootstrap 5 JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('grades-form').addEventListener('submit', function(event) {
+            // Show the loading indicator
+            document.getElementById('loading-indicator').style.display = 'block';
+    
+            // Optionally disable the submit button to prevent multiple submissions
+            document.getElementById('submit-btn').disabled = true;
+        });
+    </script>
     <script>
         particlesJS('particles-js', {
             "particles": {
