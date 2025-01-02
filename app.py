@@ -122,7 +122,7 @@ def get_grades():
                                     'percentage': int(percentage)
                                 })
                         except: 
-                            flash("تم تظهر النتيجة بعد حاول مرة اخري لاحقا!")
+                            flash("لم تظهر النتيجة بعد حاول مرة اخري لاحقا")
                             return redirect(url_for('index'))
                 percentage = float(total_degrees/max_degrees)*100
                 formatted_percentage = "{:.2f}".format(percentage)
