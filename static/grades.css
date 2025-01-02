@@ -1,38 +1,91 @@
 body {
     font-family: 'Cairo', sans-serif;
-    background: url('https://images.pexels.com/photos/419635/notebook-empty-design-paper-419635.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') center center/cover no-repeat;
-    color: #333; /* Text color */
-    height: 100vh; /* Set the height to 100% of the viewport height */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f3fafd;
 }
-
-/* Styles for the grades table */
-table {
+#particles-js {
+    position: absolute;
     width: 100%;
+    height: 100%;
+    background-color: transparent; /* Remove background color */
+    z-index: -3; /* Set z-index to 0 */
+  }
+.styled-table {
     border-collapse: collapse;
-    border-radius: 10px;
+    margin: 20px 0;
+    font-size: 0.9em;
+    font-family: 'Cairo', sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    z-index: 1;
 }
 
-th, td {
-    padding: 8px;
-    text-align: center;
+.styled-table thead tr {
+    background-color: #217093;
+    color: #ffffff;
+    text-align: right;
+    font-family: 'Cairo', sans-serif;
 }
 
-th {
-    background-color: #45a049; /* Green background color */
-    color: white; /* White text color */
-    font-weight: bold; /* Bold font */
+.styled-table th,
+.styled-table td {
+    padding: 8px 10px;
 }
 
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-tr {
-    background-color: #fff;
+.to-be-rounded {
+    border-radius: 10px 10px 0px 0px; /* Rounded border */
 }
 
-/* Custom styles for other elements */
-h1 {
-    color: #333;
-    text-align: center;
-    margin-top: 20px;
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-content h2 {
+    margin: 0;
+}
+
+.header-content h3 {
+    margin: 0;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #c1e2f0;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #217093;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #217093;
+}
+
+#download-btn {
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #4eb8dd;
+    border: none;
+    box-sizing: border-box;
+    box-shadow: none;
+    height: 30px;
+    color: #FFF;
+    font-weight: 400;
+    font-family: 'cairo', sans-serif;
+    transition: background-color .2s ease-out;
+}
+
+#download-btn:hover {
+    background-color: #1b5a75;
 }
