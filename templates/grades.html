@@ -1,55 +1,111 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='grades.css') }}">
-    <title>Grades</title>
+    <title>درجاتك</title>
 </head>
 <body>
     <div id="particles-js"></div>
+
     <div class="container">
-        <table class="styled-table" id="grades-table">
-            <thead>
-                <tr>
-                    <th colspan="5" class="to-be-rounded">
-                        <div class="header-content">
-                            <h2>ازيك يا {{ name }}❤️👋</h2>
-                            <button id="download-btn">تنزيل النتيجة😉✨</button>
-                            </div>
-                        <h3>النسبة المئوية الكلية: {{ percentage }}%</h3>
-                    </th>
-                </tr>
-                <tr>
-                    <th>المادة</th>
-                    <th>النسبة المئوية</th>
-                    <th>درجتك</th>
-                    <th>التقدير</th>
-                    <th>الدرجة النهائيه</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for grade in grades %}
-                <tr>
-                    <td>{{ grade.course_name }}</td>
-                    <td>{{ grade.percentage }}%</td>
-                    <td>{{ grade.total_score }}</td>
-                    <td>{{ grade.grade }}</td>
-                    <td>{{ grade.max_score }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="5" style="text-align: center; font-style: bold; color: #000000;">
-                        By RefOo Sami ❤️
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+        <h3 class="welcome">ازيك يا <span>{{ name }}</span> ❤️👋</h3>
+        
+        <!-- Top Bar: Contains Year Buttons and Percentage -->
+        <div class="top-bar">
+            <div class="buttons">
+                <button onclick="toggleYear('First')">اولى</button>
+                <button onclick="toggleYear('Second')">ثانية</button>
+                <button onclick="toggleYear('Third')">ثالثة</button>
+                <button onclick="toggleYear('Fourth')">رابعة</button>
+            </div>
+            <div id="percentage-container">
+                النسبة المئوية: <span id="percentage">{{ percentage_by_year['First'] }}%</span>
+            </div>
+        </div>
+        <!-- Grades Table -->
+        <div class="table-container">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>المادة</th>
+                        <th>النسبة المئوية</th>
+                        <th>درجتك</th>
+                        <th>التقدير</th>
+                        <th>الدرجة النهائية</th>
+                    </tr>
+                </thead>
+                <tbody id="grades-body">
+                    {% for grade in grades_by_year['First'] %}
+                    <tr>
+                        <td>{{ grade.course_name }}</td>
+                        <td>{{ grade.percentage }}%</td>
+                        <td>{{ grade.total_score }}</td>
+                        <td>{{ grade.grade }}</td>
+                        <td>{{ grade.max_score }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- Footer with Made By and Contact Button -->
+        <div class="footer">
+            <div class="made-by">❤️ Made by RefOo Sami</div>
+            <a href="https://t.me/RefOoSami" class="contact-link" target="_blank">تواصل</a>
+        </div>
     </div>
+
+    <script>
+        let gradesData = JSON.parse('{{ grades_by_year | tojson | safe }}');
+        let percentages = JSON.parse('{{ percentage_by_year | tojson | safe }}');
+
+        function toggleYear(year) {
+            let tbody = document.getElementById('grades-body');
+            let percentageElement = document.getElementById('percentage');
+
+            // Add fade-out animation
+            tbody.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+            tbody.style.opacity = '0';
+            tbody.style.transform = 'translateY(-10px)';
+
+            setTimeout(() => {
+                // Update percentage
+                percentageElement.innerText = percentages[year] + "%";
+
+                // Clear current rows
+                tbody.innerHTML = '';
+
+                // Populate new rows with animation
+                gradesData[year].forEach((grade, index) => {
+                    let row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${grade.course_name}</td>
+                        <td>${grade.percentage}%</td>
+                        <td>${grade.total_score}</td>
+                        <td>${grade.grade}</td>
+                        <td>${grade.max_score}</td>
+                    `;
+
+                    // Apply staggered slide-in animation
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateX(-20px)';
+                    row.style.animation = `fadeSlideIn 0.4s ease-out ${index * 0.1}s forwards`;
+
+                    tbody.appendChild(row);
+                });
+
+                // Add fade-in animation to the table
+                setTimeout(() => {
+                    tbody.style.opacity = '1';
+                    tbody.style.transform = 'translateY(0)';
+                }, 90);
+            }, 300);
+        }
+
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
@@ -104,40 +160,6 @@
                 }
             },
             "retina_detect": true
-        });
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Enhanced confetti settings
-            const confettiSettings = {
-                particleCount: 1000, // Increase the number of particles
-                spread: 80, // Wider spread
-                startVelocity: 60, // Faster initial velocity
-                decay: 0.9, // Slower decay for longer-lasting confetti
-                origin: { y: 1 }, // Start from the bottom of the screen
-                colors: [
-                    '#ff0', '#0f0', '#00f', '#f00', '#ff0', '#217093', // Original colors
-                    '#ff1493', '#00ffff', '#ffa500', '#800080', '#ff4500', '#7fff00', // New vibrant colors
-                    '#00ff7f', '#ff69b4', '#8a2be2', '#ffd700', '#00ced1', '#ff6347' // More colors
-                ],
-                shapes: ['circle', 'square'], // Add different shapes
-                gravity: 0.5, // Adjust gravity for a more natural fall
-                ticks: 250, // Increase the duration of the confetti
-                disableForReducedMotion: true // Respect user preferences for reduced motion
-            };
-
-            // Fire confetti when the page loads
-            confetti(confettiSettings);
-
-            // Download table as image
-            document.getElementById('download-btn').addEventListener('click', function() {
-                html2canvas(document.getElementById('grades-table')).then(function(canvas) {
-                    let link = document.createElement('a');
-                    link.download = 'درجاتي-By Raafat Sami.png';
-                    link.href = canvas.toDataURL();
-                    link.click();
-                });
-            });
         });
     </script>
 </body>
