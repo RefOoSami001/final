@@ -38,7 +38,7 @@ def get_grades():
         password = request.form['password'].strip()
 
         # Validate username (National ID)
-        if len(email) not in [9, 14]:
+        if len(email) not in [9, 14, 8]:
             flash("الرقم القومي يجب أن يكون 9 أو 14 رقمًا!")
             return redirect(url_for('index'))
 
