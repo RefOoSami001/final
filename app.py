@@ -37,11 +37,6 @@ def get_grades():
         email = request.form['username'].strip()
         password = request.form['password'].strip()
 
-        # Validate username (National ID)
-        if len(email) not in [9, 14, 8]:
-            flash("الرقم القومي يجب أن يكون 9 أو 14 رقمًا!")
-            return redirect(url_for('index'))
-
         if not all(ord(char) < 128 for char in email):
             flash("يجب كتابه الرقم القومي بالارقام الانجليزيه!")
             return redirect(url_for('index'))
@@ -86,7 +81,8 @@ def get_grades():
                     "First": [],
                     "Second": [],
                     "Third": [],
-                    "Fourth": []
+                    "Fourth": [],
+                    "Fifth": []
                 }
 
                 max_degrees = 0
@@ -101,51 +97,52 @@ def get_grades():
                 name_req = requests.post('http://stda.minia.edu.eg/PortalgetJCI', cookies=cookies, headers=headers, data=data, verify=False).json()
                 full_name = name_req[0]['Name'].split('|')[0]
                 for entry in response_json:
-                    try:
-                        year = entry['ScopeName'].split('-')[0].strip()
-                        if 'أولى' in year:
-                            year_category = "First"
-                        elif 'ثانية' in year:
-                            year_category = "Second"
-                        elif 'ثالثة' in year:
-                            year_category = "Third"
-                        elif 'رابعة' in year:
-                            year_category = "Fourth"
-                        else:
-                            continue
-                        print(entry)
-                        if entry.get('ds') and len(entry['ds']) > 0:
-                            for course in entry['ds'][0].get('StudyYearCourses', []):
-                                course_name = course['CourseName'].replace("||", '')
-                                max_score = course['Max']
-                                total_score = course['Total']
-                                grade_name = course["GradeName"].split("|")[0]
+                    year = entry['ScopeName'].split('-')[0].strip()
+                    if 'أولى' in year:
+                        year_category = "First"
+                    elif 'ثانية' in year:
+                        year_category = "Second"
+                    elif 'ثالثة' in year:
+                        year_category = "Third"
+                    elif 'رابعة' in year:
+                        year_category = "Fourth"
+                    elif 'خامسة' in year:
+                        year_category = "Fifth"
+                    else:
+                        continue
+                    if entry.get('ds') and len(entry['ds']) > 0:
+                        for course in entry['ds'][0].get('StudyYearCourses', []):
+                            course_name = course['CourseName'].replace("||", '')
+                            max_score = course['Max']
+                            total_score = course['Total']
+                            grade_name = course["GradeName"].split("|")[0]
 
-                                if total_score:
-                                    percentage = (float(total_score) / float(max_score)) * 100
-                                else:
-                                    percentage = 0
-                                    total_score = 0
-                                    grade_name = "غير معروف"
+                            if total_score:
+                                try:percentage = (float(total_score) / float(max_score)) * 100
+                                except:percentage=0
+                            else:
+                                percentage = 0
+                                total_score = 0
+                                grade_name = "غير معروف"
 
-                                max_degrees += float(max_score)
-                                total_degrees += float(total_score)
+                            max_degrees += float(max_score)
+                            try:total_degrees += float(total_score)
+                            except:pass
 
-                                grades_by_year[year_category].append({
-                                    'course_name': course_name,
-                                    'grade': grade_name,
-                                    'max_score': max_score,
-                                    'total_score': total_score,
-                                    'percentage': int(percentage)
-                                })
-                    except:
-                        flash("لم تظهر النتيجة بعد حاول مرة اخري لاحقا!")
-                        return redirect(url_for('index'))
+                            grades_by_year[year_category].append({
+                                'course_name': course_name,
+                                'grade': grade_name,
+                                'max_score': max_score,
+                                'total_score': total_score,
+                                'percentage': int(percentage)
+                            })
+
 
                 percentage_by_year = {}
 
                 for year, grades in grades_by_year.items():
-                    total_score = sum(float(g['total_score']) for g in grades)
+                    try:total_score = sum(float(g['total_score']) for g in grades)
+                    except:pass
                     max_score = sum(float(g['max_score']) for g in grades)
                     percentage_by_year[year] = "{:.2f}".format((total_score / max_score) * 100) if max_score > 0 else "0.00"
 
@@ -181,6 +178,5 @@ def get_grades():
     except Exception as e:
         flash(f"حدث خطأ غير متوقع: {str(e)}")
         return redirect(url_for('index'))
-
 if __name__ == "__main__":
     app.run(debug=True)
