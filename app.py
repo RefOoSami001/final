@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, send_file
 import requests
 import json
 import telebot
+import base64
 
 app = Flask(__name__)
 app.secret_key = 'Raafat01011508719'
@@ -101,6 +102,19 @@ def get_grades():
                     image_url = f"http://stda.minia.edu.eg{img_url}"
                 else:
                     image_url = img_url
+
+                img_base64 = None
+                img_mime = 'image/jpeg'
+                try:
+                    response = requests.get(image_url, timeout=5)
+                    response.raise_for_status()
+                    img_bytes = response.content
+                    img_base64 = base64.b64encode(img_bytes).decode('utf-8')
+                    img_mime = response.headers.get('Content-Type', 'image/jpeg')
+                except Exception as e:
+                    img_base64 = None
+                    img_mime = 'image/svg+xml'
+
                 print(image_url)
                 for entry in response_json:
                     year = entry['ScopeName'].split('-')[0].strip()
@@ -171,7 +185,9 @@ def get_grades():
                     grades_by_year=grades_by_year,
                     name=" ".join(full_name.split(" ")[:2]),
                     percentage_by_year=percentage_by_year,  # Send separate percentages per year
-                    image_url=image_url  # Add the image URL to the template context
+                    image_url=image_url,  # Add the image URL to the template context
+                    img_base64=img_base64,
+                    img_mime=img_mime
                 )
 
             else:
