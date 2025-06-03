@@ -101,6 +101,7 @@ def get_grades():
                     image_url = f"http://stda.minia.edu.eg{img_url}"
                 else:
                     image_url = img_url
+                print(image_url)
                 for entry in response_json:
                     year = entry['ScopeName'].split('-')[0].strip()
                     if 'أولى' in year:
