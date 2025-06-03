@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='grades.css') }}">
+    <title>درجاتك</title>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4278964551573678"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header animate-fade-in">
+            <div class="student-info">
+                <div class="image-wrapper">
+                    <img src="{{ image_url }}" alt="Student Photo" id="student-photo" class="animate-scale">
+                </div>
+                <div class="name-container">
+                    <p class="student-id animate-slide-left">مساء الخير يا</p>
+                    <h1 class="animate-slide-right">{{ name }}❤️</h1>
+                </div>
+            </div>
+            <!-- Year Selection -->
+            <nav class="year-nav animate-fade-in">
+                <div class="year-hint">اختر السنة الدراسية</div>
+                <button class="year-btn active" onclick="toggleYear('First')">
+                    <span class="btn-content">أولي</span>
+                </button>
+                <button class="year-btn" onclick="toggleYear('Second')">
+                    <span class="btn-content">ثانية</span>
+                </button>
+                <button class="year-btn" onclick="toggleYear('Third')">
+                    <span class="btn-content">ثالثة</span>
+                </button>
+                <button class="year-btn" onclick="toggleYear('Fourth')">
+                    <span class="btn-content">رابعة</span>
+                </button>
+                <button class="year-btn" onclick="toggleYear('Fifth')">
+                    <span class="btn-content">خامسة</span>
+                </button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Ad -->
+            <div class="ad-container top-ad">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4278964551573678"
+                    data-ad-slot="4005955891" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
+
+            <!-- Grades Display -->
+            <section class="grades-section animate-fade-in">
+                <div class="grades-header">
+                    <h2>الدرجات</h2>
+                    <div class="total-percentage">
+                        النسبة المئوية: <span id="percentage" class="animate-count">{{ percentage_by_year['First']
+                            }}%</span>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="grades-table">
+                        <thead>
+                            <tr>
+                                <th>المادة</th>
+                                <th>الدرجة</th>
+                                <th>التقدير</th>
+                                <th>النسبة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="grades-body">
+                            {% for grade in grades_by_year['First'] %}
+                            <tr class="animate-fade-in">
+                                <td>{{ grade.course_name }}</td>
+                                <td>{{ grade.total_score }}/{{ grade.max_score }}</td>
+                                <td>{{ grade.grade }}</td>
+                                <td>{{ grade.percentage }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Bottom Ad -->
+            <div class="ad-container bottom-ad">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4278964551573678"
+                    data-ad-slot="3802775919" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer animate-fade-in">
+            <p>Made with ❤️ by RefOo Sami</p>
+            <a href="https://t.me/RefOoSami" target="_blank" class="contact-btn">
+                <span class="btn-content">تواصل معنا</span>
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize AdSense ads
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({});
+
+        document.getElementById('student-photo').onerror = function () {
+            this.src = "{{ url_for('static', filename='default-avatar.png') }}";
+        };
+
+        let gradesData = JSON.parse('{{ grades_by_year | tojson | safe }}');
+        let percentages = JSON.parse('{{ percentage_by_year | tojson | safe }}');
+
+        function toggleYear(year) {
+            // Update active button
+            document.querySelectorAll('.year-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            let tbody = document.getElementById('grades-body');
+            let percentageElement = document.getElementById('percentage');
+
+            // Update percentage with animation
+            percentageElement.classList.remove('animate-count');
+            void percentageElement.offsetWidth; // Trigger reflow
+            percentageElement.classList.add('animate-count');
+            percentageElement.innerText = percentages[year] + "%";
+
+            // Clear and update table with animation
+            tbody.style.opacity = '0';
+            setTimeout(() => {
+                tbody.innerHTML = '';
+
+                if (gradesData[year].length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="no-grades">لم يتم دفع كامل الرسوم او لم تظهر النتيجة لهذة السنة الدراسيه</td>
+                        </tr>
+                    `;
+                } else {
+                    gradesData[year].forEach((grade, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${grade.course_name}</td>
+                            <td>${grade.total_score}/${grade.max_score}</td>
+                            <td>${grade.grade}</td>
+                            <td>${grade.percentage}%</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+                tbody.style.opacity = '1';
+            }, 200);
+        }
+    </script>
+</body>
+
+</html>
