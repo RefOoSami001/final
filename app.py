@@ -96,7 +96,11 @@ def get_grades():
 
                 user_data = requests.post('http://stda.minia.edu.eg/PortalgetJCI', cookies=cookies, headers=headers, data=data).json()
                 full_name = user_data[0]['Name'].split('|')[0]
-                image_url = f"http://stda.minia.edu.eg{user_data[0]['ImgUrl']}"
+                img_url = user_data[0]['ImgUrl']
+                if img_url.startswith('/'):
+                    image_url = f"http://stda.minia.edu.eg{img_url}"
+                else:
+                    image_url = img_url
                 for entry in response_json:
                     year = entry['ScopeName'].split('-')[0].strip()
                     if 'أولى' in year:
