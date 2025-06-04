@@ -32,25 +32,6 @@
                     <h1 class="animate-slide-right">{{ name }}❤️</h1>
                 </div>
             </div>
-            <!-- Year Selection -->
-            <nav class="year-nav animate-fade-in">
-                <div class="year-hint">اختر السنة الدراسية</div>
-                <button class="year-btn active" data-year="First">
-                    <span class="btn-content">أولي</span>
-                </button>
-                <button class="year-btn" data-year="Second">
-                    <span class="btn-content">ثانية</span>
-                </button>
-                <button class="year-btn" data-year="Third">
-                    <span class="btn-content">ثالثة</span>
-                </button>
-                <button class="year-btn" data-year="Fourth">
-                    <span class="btn-content">رابعة</span>
-                </button>
-                <button class="year-btn" data-year="Fifth">
-                    <span class="btn-content">خامسة</span>
-                </button>
-            </nav>
         </header>
 
         <!-- Main Content -->
@@ -63,36 +44,58 @@
 
             <!-- Grades Display -->
             <section class="grades-section animate-fade-in">
-                <div class="grades-header">
-                    <h2>الدرجات</h2>
-                    <div class="total-percentage">
-                        النسبة المئوية: <span id="percentage" class="animate-count">{{ percentage_by_year['First']
-                            }}%</span>
+                <h2>الدرجات</h2>
+
+                {% for year, grades in grades_by_year.items() %}
+                <div class="year-table-container">
+                    <div class="year-header" data-year="{{ year }}">
+                        <div class="year-title">
+                            <span class="year-percentage">{{ percentage_by_year[year] }}%</span>
+                            <span class="year-name">
+                                {% if year == 'First' %}أولي
+                                {% elif year == 'Second' %}ثانية
+                                {% elif year == 'Third' %}ثالثة
+                                {% elif year == 'Fourth' %}رابعة
+                                {% elif year == 'Fifth' %}خامسة
+                                {% endif %}
+                            </span>
+                            <div class="expand-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="year-content" id="content-{{ year }}">
+                        <div class="table-container">
+                            <table class="grades-table">
+                                <thead>
+                                    <tr>
+                                        <th>المادة</th>
+                                        <th>الدرجة</th>
+                                        <th>التقدير</th>
+                                        <th>النسبة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if grades|length == 0 %}
+                                    <tr>
+                                        <td colspan="4" class="no-grades">لم يتم دفع كامل الرسوم او لم تظهر النتيجة لهذة
+                                            السنة الدراسيه</td>
+                                    </tr>
+                                    {% else %}
+                                    {% for grade in grades %}
+                                    <tr class="animate-fade-in">
+                                        <td>{{ grade.course_name }}</td>
+                                        <td>{{ grade.total_score }}/{{ grade.max_score }}</td>
+                                        <td>{{ grade.grade }}</td>
+                                        <td>{{ grade.percentage }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-
-                <div class="table-container">
-                    <table class="grades-table">
-                        <thead>
-                            <tr>
-                                <th>المادة</th>
-                                <th>الدرجة</th>
-                                <th>التقدير</th>
-                                <th>النسبة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="grades-body">
-                            {% for grade in grades_by_year['First'] %}
-                            <tr class="animate-fade-in">
-                                <td>{{ grade.course_name }}</td>
-                                <td>{{ grade.total_score }}/{{ grade.max_score }}</td>
-                                <td>{{ grade.grade }}</td>
-                                <td>{{ grade.percentage }}%</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                {% endfor %}
             </section>
 
             <!-- Bottom Ad -->
@@ -111,6 +114,188 @@
         </footer>
     </div>
 
+    <style>
+        /* Modern styles with centered percentages */
+        .year-table-container {
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease;
+            background: white;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .year-table-container:hover {
+            transform: translateY(-2px);
+        }
+
+        .year-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .year-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 1rem;
+        }
+
+        .year-name {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: white;
+            margin-right: auto;
+        }
+
+        .year-percentage {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            min-width: 90px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .expand-icon {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+            opacity: 0.8;
+            margin-right: 0.5rem;
+        }
+
+        .expand-icon::before,
+        .expand-icon::after {
+            content: '';
+            position: absolute;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        .expand-icon::before {
+            width: 2px;
+            height: 10px;
+            top: 5px;
+            left: 9px;
+            transform: rotate(45deg);
+        }
+
+        .expand-icon::after {
+            width: 2px;
+            height: 10px;
+            top: 5px;
+            left: 9px;
+            transform: rotate(-45deg);
+        }
+
+        .year-header.active .expand-icon::before {
+            transform: rotate(-45deg);
+        }
+
+        .year-header.active .expand-icon::after {
+            transform: rotate(45deg);
+        }
+
+        .year-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .year-content.expanded {
+            max-height: 2000px;
+        }
+
+        .grades-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1rem 0;
+        }
+
+        .grades-table th,
+        .grades-table td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .grades-table th {
+            background: var(--primary-light);
+            font-weight: 500;
+            color: var(--text-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .grades-table tr:hover td {
+            background: var(--primary-light);
+        }
+
+        .grades-table td {
+            color: var(--text-color);
+        }
+
+        .no-grades {
+            text-align: center;
+            color: var(--text-light);
+            padding: 2rem;
+            font-size: 1.1rem;
+            background: var(--surface);
+            border-radius: 8px;
+            margin: 1rem;
+        }
+
+        .table-container {
+            padding: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .year-header {
+                padding: 0.7rem 1rem;
+            }
+
+            .year-name {
+                font-size: 1.1rem;
+            }
+
+            .year-percentage {
+                padding: 0.3rem 1rem;
+                font-size: 0.95rem;
+                min-width: 80px;
+            }
+
+            .expand-icon {
+                width: 18px;
+                height: 18px;
+            }
+
+            .expand-icon::before,
+            .expand-icon::after {
+                height: 9px;
+                top: 4.5px;
+                left: 8.5px;
+            }
+        }
+    </style>
+
     <script>
         // Initialize AdSense ads
         (adsbygoogle = window.adsbygoogle || []).push({});
@@ -127,68 +312,52 @@
             this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23CCCCCC'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
         };
 
-        let gradesData = JSON.parse('{{ grades_by_year | tojson | safe }}');
-        let percentages = JSON.parse('{{ percentage_by_year | tojson | safe }}');
+        // Enhanced expandable tables with smooth animations
+        document.querySelectorAll('.year-header').forEach(header => {
+            header.addEventListener('click', function () {
+                const year = this.dataset.year;
+                const content = document.getElementById(`content-${year}`);
 
-        // Function to handle year selection
-        function toggleYear(year) {
-            // Update active button
-            document.querySelectorAll('.year-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.year === year) {
-                    btn.classList.add('active');
-                }
-            });
+                // Toggle current header with smooth animation
+                this.classList.toggle('active');
 
-            let tbody = document.getElementById('grades-body');
-            let percentageElement = document.getElementById('percentage');
-
-            // Update percentage with animation
-            percentageElement.classList.remove('animate-count');
-            void percentageElement.offsetWidth; // Trigger reflow
-            percentageElement.classList.add('animate-count');
-            percentageElement.innerText = percentages[year] + "%";
-
-            // Clear and update table with animation
-            tbody.style.opacity = '0';
-            setTimeout(() => {
-                tbody.innerHTML = '';
-
-                if (gradesData[year].length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="4" class="no-grades">لم يتم دفع كامل الرسوم او لم تظهر النتيجة لهذة السنة الدراسيه</td>
-                        </tr>
-                    `;
+                // Animate content expansion/collapse
+                if (content.classList.contains('expanded')) {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    setTimeout(() => {
+                        content.classList.remove('expanded');
+                        content.style.maxHeight = '0';
+                    }, 10);
                 } else {
-                    gradesData[year].forEach((grade, index) => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${grade.course_name}</td>
-                            <td>${grade.total_score}/${grade.max_score}</td>
-                            <td>${grade.grade}</td>
-                            <td>${grade.percentage}%</td>
-                        `;
-                        tbody.appendChild(row);
-                    });
+                    content.classList.add('expanded');
+                    content.style.maxHeight = content.scrollHeight + 'px';
                 }
-                tbody.style.opacity = '1';
-            }, 200);
-        }
 
-        // Add event listeners to all year buttons
-        document.querySelectorAll('.year-btn').forEach(button => {
-            // Handle click events
-            button.addEventListener('click', function (e) {
-                e.preventDefault();
-                toggleYear(this.dataset.year);
+                // Close other headers with smooth animation
+                document.querySelectorAll('.year-header').forEach(otherHeader => {
+                    if (otherHeader !== this) {
+                        otherHeader.classList.remove('active');
+                        const otherContent = document.getElementById(`content-${otherHeader.dataset.year}`);
+                        if (otherContent.classList.contains('expanded')) {
+                            otherContent.style.maxHeight = otherContent.scrollHeight + 'px';
+                            setTimeout(() => {
+                                otherContent.classList.remove('expanded');
+                                otherContent.style.maxHeight = '0';
+                            }, 10);
+                        }
+                    }
+                });
             });
+        });
 
-            // Handle touch events
-            button.addEventListener('touchstart', function (e) {
-                e.preventDefault();
-                toggleYear(this.dataset.year);
-            }, { passive: false });
+        // Open first year by default with animation
+        window.addEventListener('load', function () {
+            const firstHeader = document.querySelector('.year-header');
+            const firstContent = document.getElementById('content-First');
+
+            firstHeader.classList.add('active');
+            firstContent.classList.add('expanded');
+            firstContent.style.maxHeight = firstContent.scrollHeight + 'px';
         });
     </script>
 </body>
