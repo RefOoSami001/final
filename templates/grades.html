@@ -35,19 +35,19 @@
             <!-- Year Selection -->
             <nav class="year-nav animate-fade-in">
                 <div class="year-hint">اختر السنة الدراسية</div>
-                <button class="year-btn active" onclick="toggleYear('First')">
+                <button class="year-btn active" data-year="First">
                     <span class="btn-content">أولي</span>
                 </button>
-                <button class="year-btn" onclick="toggleYear('Second')">
+                <button class="year-btn" data-year="Second">
                     <span class="btn-content">ثانية</span>
                 </button>
-                <button class="year-btn" onclick="toggleYear('Third')">
+                <button class="year-btn" data-year="Third">
                     <span class="btn-content">ثالثة</span>
                 </button>
-                <button class="year-btn" onclick="toggleYear('Fourth')">
+                <button class="year-btn" data-year="Fourth">
                     <span class="btn-content">رابعة</span>
                 </button>
-                <button class="year-btn" onclick="toggleYear('Fifth')">
+                <button class="year-btn" data-year="Fifth">
                     <span class="btn-content">خامسة</span>
                 </button>
             </nav>
@@ -130,12 +130,15 @@
         let gradesData = JSON.parse('{{ grades_by_year | tojson | safe }}');
         let percentages = JSON.parse('{{ percentage_by_year | tojson | safe }}');
 
+        // Function to handle year selection
         function toggleYear(year) {
             // Update active button
             document.querySelectorAll('.year-btn').forEach(btn => {
                 btn.classList.remove('active');
+                if (btn.dataset.year === year) {
+                    btn.classList.add('active');
+                }
             });
-            event.currentTarget.classList.add('active');
 
             let tbody = document.getElementById('grades-body');
             let percentageElement = document.getElementById('percentage');
@@ -172,6 +175,21 @@
                 tbody.style.opacity = '1';
             }, 200);
         }
+
+        // Add event listeners to all year buttons
+        document.querySelectorAll('.year-btn').forEach(button => {
+            // Handle click events
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                toggleYear(this.dataset.year);
+            });
+
+            // Handle touch events
+            button.addEventListener('touchstart', function (e) {
+                e.preventDefault();
+                toggleYear(this.dataset.year);
+            }, { passive: false });
+        });
     </script>
 </body>
 
