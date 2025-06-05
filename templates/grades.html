@@ -30,7 +30,12 @@
                 <div class="name-container">
                     <p class="student-id animate-slide-left">ازيك يا</p>
                     <h1 class="animate-slide-right">{{ name }}❤️</h1>
+                    <p class="student-code animate-slide-left">{{ student_code }}</p>
                 </div>
+                <a href="/" class="logout-btn animate-fade-in">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>تسجيل الخروج</span>
+                </a>
             </div>
         </header>
 
@@ -50,7 +55,6 @@
                 <div class="year-table-container">
                     <div class="year-header">
                         <div class="year-title">
-                            <span class="year-percentage">{{ percentage_by_year[year] }}%</span>
                             <span class="year-name">
                                 {% if year == 'First' %}أولي
                                 {% elif year == 'Second' %}ثانية
@@ -59,6 +63,7 @@
                                 {% elif year == 'Fifth' %}خامسة
                                 {% endif %}
                             </span>
+                            <span class="year-percentage">{{ percentage_by_year[year] }}%</span>
                         </div>
                     </div>
 
@@ -112,126 +117,6 @@
             </a>
         </footer>
     </div>
-
-    <style>
-        /* Modern styles with centered percentages */
-        .year-table-container {
-            margin-bottom: 1.5rem;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-            transition: transform 0.3s ease;
-            background: white;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .year-table-container:hover {
-            transform: translateY(-2px);
-        }
-
-        .year-header {
-            background: var(--primary-color);
-            color: white;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-        }
-
-        .year-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            gap: 1rem;
-        }
-
-        .year-name {
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: white;
-            margin-right: auto;
-        }
-
-        .year-percentage {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 0.4rem 1.2rem;
-            border-radius: 20px;
-            font-size: 1rem;
-            font-weight: 500;
-            min-width: 90px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .year-content {
-            background: white;
-        }
-
-        .grades-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin: 1rem 0;
-        }
-
-        .grades-table th,
-        .grades-table td {
-            padding: 1rem;
-            text-align: right;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .grades-table th {
-            background: var(--primary-light);
-            font-weight: 500;
-            color: var(--text-color);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .grades-table tr:hover td {
-            background: var(--primary-light);
-        }
-
-        .grades-table td {
-            color: var(--text-color);
-        }
-
-        .no-grades {
-            text-align: center;
-            color: var(--text-light);
-            padding: 2rem;
-            font-size: 1.1rem;
-            background: var(--surface);
-            border-radius: 8px;
-            margin: 1rem;
-        }
-
-        .table-container {
-            padding: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .year-header {
-                padding: 0.7rem 1rem;
-            }
-
-            .year-name {
-                font-size: 1.1rem;
-            }
-
-            .year-percentage {
-                padding: 0.3rem 1rem;
-                font-size: 0.95rem;
-                min-width: 80px;
-            }
-        }
-    </style>
 
     <script>
         // Initialize AdSense ads
