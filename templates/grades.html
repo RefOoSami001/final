@@ -142,6 +142,8 @@
             align-items: center;
             transition: all 0.3s ease;
             position: relative;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         .year-title {
@@ -212,14 +214,12 @@
         }
 
         .year-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
+            display: none;
             background: white;
         }
 
         .year-content.expanded {
-            max-height: 2000px;
+            display: block;
         }
 
         .grades-table {
@@ -312,45 +312,26 @@
             this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23CCCCCC'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
         };
 
-        // Enhanced expandable tables with improved Android compatibility
+        // Simple and reliable expandable tables
         document.querySelectorAll('.year-header').forEach(header => {
-            header.addEventListener('click', function (e) {
-                e.preventDefault(); // Prevent any default behavior
+            header.addEventListener('click', function () {
                 const year = this.dataset.year;
                 const content = document.getElementById(`content-${year}`);
 
                 // Toggle current header
                 this.classList.toggle('active');
 
-                // Handle content expansion/collapse
+                // Toggle content visibility
                 if (content.classList.contains('expanded')) {
-                    // Collapse
-                    content.style.maxHeight = '0';
-                    content.style.opacity = '0';
-                    setTimeout(() => {
-                        content.classList.remove('expanded');
-                    }, 300); // Match this with CSS transition duration
+                    content.classList.remove('expanded');
                 } else {
-                    // Expand
+                    // Close other contents first
+                    document.querySelectorAll('.year-content.expanded').forEach(otherContent => {
+                        otherContent.classList.remove('expanded');
+                        otherContent.previousElementSibling.classList.remove('active');
+                    });
                     content.classList.add('expanded');
-                    content.style.maxHeight = content.scrollHeight + 'px';
-                    content.style.opacity = '1';
                 }
-
-                // Close other headers
-                document.querySelectorAll('.year-header').forEach(otherHeader => {
-                    if (otherHeader !== this) {
-                        otherHeader.classList.remove('active');
-                        const otherContent = document.getElementById(`content-${otherHeader.dataset.year}`);
-                        if (otherContent.classList.contains('expanded')) {
-                            otherContent.style.maxHeight = '0';
-                            otherContent.style.opacity = '0';
-                            setTimeout(() => {
-                                otherContent.classList.remove('expanded');
-                            }, 300);
-                        }
-                    }
-                });
             });
         });
 
@@ -362,8 +343,6 @@
             if (firstHeader && firstContent) {
                 firstHeader.classList.add('active');
                 firstContent.classList.add('expanded');
-                firstContent.style.maxHeight = firstContent.scrollHeight + 'px';
-                firstContent.style.opacity = '1';
             }
         });
     </script>
