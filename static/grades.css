@@ -586,60 +586,25 @@ body {
 }
 
 .year-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: all 0.3s ease;
     background: white;
-    opacity: 0;
-    will-change: max-height, opacity;
+    opacity: 1;
+    will-change: opacity;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-}
-
-.year-content.expanded {
-    max-height: 2000px;
-    opacity: 1;
 }
 
 .year-header {
     background: var(--primary-color);
     color: white;
     padding: 0.8rem 1.2rem;
-    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.3s ease;
     position: relative;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
-}
-
-.expand-icon {
-    position: relative;
-    width: 20px;
-    height: 20px;
-    transition: transform 0.3s ease;
-    opacity: 0.8;
-    margin-right: 0.5rem;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-}
-
-.expand-icon::before,
-.expand-icon::after {
-    content: '';
-    position: absolute;
-    background-color: white;
-    transition: all 0.3s ease;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
 }
 
 .year-title {
