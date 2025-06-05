@@ -312,52 +312,59 @@
             this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23CCCCCC'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
         };
 
-        // Enhanced expandable tables with smooth animations
+        // Enhanced expandable tables with improved Android compatibility
         document.querySelectorAll('.year-header').forEach(header => {
-            header.addEventListener('click', function () {
+            header.addEventListener('click', function (e) {
+                e.preventDefault(); // Prevent any default behavior
                 const year = this.dataset.year;
                 const content = document.getElementById(`content-${year}`);
 
-                // Toggle current header with smooth animation
+                // Toggle current header
                 this.classList.toggle('active');
 
-                // Animate content expansion/collapse
+                // Handle content expansion/collapse
                 if (content.classList.contains('expanded')) {
-                    content.style.maxHeight = content.scrollHeight + 'px';
+                    // Collapse
+                    content.style.maxHeight = '0';
+                    content.style.opacity = '0';
                     setTimeout(() => {
                         content.classList.remove('expanded');
-                        content.style.maxHeight = '0';
-                    }, 10);
+                    }, 300); // Match this with CSS transition duration
                 } else {
+                    // Expand
                     content.classList.add('expanded');
                     content.style.maxHeight = content.scrollHeight + 'px';
+                    content.style.opacity = '1';
                 }
 
-                // Close other headers with smooth animation
+                // Close other headers
                 document.querySelectorAll('.year-header').forEach(otherHeader => {
                     if (otherHeader !== this) {
                         otherHeader.classList.remove('active');
                         const otherContent = document.getElementById(`content-${otherHeader.dataset.year}`);
                         if (otherContent.classList.contains('expanded')) {
-                            otherContent.style.maxHeight = otherContent.scrollHeight + 'px';
+                            otherContent.style.maxHeight = '0';
+                            otherContent.style.opacity = '0';
                             setTimeout(() => {
                                 otherContent.classList.remove('expanded');
-                                otherContent.style.maxHeight = '0';
-                            }, 10);
+                            }, 300);
                         }
                     }
                 });
             });
         });
 
-        // Open first year by default with animation
+        // Open first year by default
         window.addEventListener('load', function () {
             const firstHeader = document.querySelector('.year-header');
             const firstContent = document.getElementById('content-First');
 
-            firstHeader.classList.add('active');
-            firstContent.classList.add('expanded');
-            firstContent.style.maxHeight = firstContent.scrollHeight + 'px';
+            if (firstHeader && firstContent) {
+                firstHeader.classList.add('active');
+                firstContent.classList.add('expanded');
+                firstContent.style.maxHeight = firstContent.scrollHeight + 'px';
+                firstContent.style.opacity = '1';
+            }
         });
     </script>
 </body>
