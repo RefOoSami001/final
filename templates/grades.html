@@ -14,6 +14,177 @@
 </head>
 
 <body>
+    {% if congrats_cooky %}
+    <div id="congrats-popup-overlay" class="congrats-popup-overlay" style="display:none;">
+        <div id="congrats-popup" class="congrats-popup">
+            <button class="congrats-close"
+                onclick="document.getElementById('congrats-popup-overlay').style.display='none';">&times;</button>
+            <div class="congrats-badge-confetti">
+                <img src="{{ url_for('static', filename='medal-champion-svgrepo-com.svg') }}" alt="Medal"
+                    class="congrats-medal" width="140" height="140" />
+            </div>
+            <div class="congrats-heading">Congratulations</div>
+            <div class="congrats-text">{{ congrats_message }}</div>
+        </div>
+    </div>
+    <script>
+        // Remove all popup particle effect code
+        function isInViewport(element) {
+            const rect = element.getBoundingClientRect();
+            return (
+                rect.top < window.innerHeight &&
+                rect.bottom > 0
+            );
+        }
+        let popupShown = false;
+        function checkShowCongratsPopup() {
+            var thirdYearTable = document.getElementById('third-year-table');
+            var overlay = document.getElementById('congrats-popup-overlay');
+            if (thirdYearTable && overlay && isInViewport(thirdYearTable) && !popupShown) {
+                overlay.style.display = 'flex';
+                popupShown = true;
+            }
+        }
+        window.addEventListener('scroll', checkShowCongratsPopup);
+        window.addEventListener('DOMContentLoaded', function () {
+            checkShowCongratsPopup();
+        });
+    </script>
+    <style>
+        .congrats-popup-overlay {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #FF7F8A33;
+            /* soft pink */
+            z-index: 99999;
+            animation: fadeIn 0.5s;
+        }
+
+        .congrats-popup {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(255, 64, 129, 0.18);
+            padding: 40px 32px 32px 32px;
+            text-align: center;
+            position: relative;
+            min-width: 320px;
+            max-width: 90vw;
+            animation: bounceIn 1s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .congrats-badge-confetti {
+            position: relative;
+            margin-bottom: 18px;
+            width: 100%;
+            min-height: 120px;
+        }
+
+        .congrats-medal {
+            display: block;
+            margin: 0 auto;
+            z-index: 2;
+            animation: tada-bounce 1.2s;
+            position: relative;
+            width: 140px !important;
+            height: 140px !important;
+        }
+
+        @keyframes tada-bounce {
+            0% {
+                transform: scale(1) rotate(0);
+            }
+
+            10%,
+            20% {
+                transform: scale(0.9) rotate(-8deg);
+            }
+
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: scale(1.1) rotate(8deg);
+            }
+
+            40%,
+            60%,
+            80% {
+                transform: scale(1.1) rotate(-8deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        .congrats-heading {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 8px;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .congrats-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .congrats-close {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #ff4081;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            80% {
+                transform: scale(0.95);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+    {% endif %}
     <div class="container">
         <!-- Header Section -->
         <header class="header animate-fade-in">
@@ -51,10 +222,11 @@
             <section class="grades-section animate-fade-in">
                 <h2>الدرجات</h2>
 
-                {% for year, grades in grades_by_year.items() %}
-                <div class="year-table-container">
+                {% for year, semesters in grades_by_year.items() %}
+                <div class="year-table-container" {% if year=='Third' %} id="third-year-table" {% endif %}>
                     <div class="year-header">
                         <div class="year-title">
+                            <span class="year-percentage">{{ percentage_by_year[year]['total'] }}%</span>
                             <span class="year-name">
                                 {% if year == 'First' %}أولي
                                 {% elif year == 'Second' %}ثانية
@@ -63,14 +235,20 @@
                                 {% elif year == 'Fifth' %}خامسة
                                 {% endif %}
                             </span>
-                            <span class="year-percentage">{{ percentage_by_year[year] }}%</span>
                         </div>
                     </div>
 
                     <div class="year-content">
-                        <div class="table-container">
+                        <div class="semester-table-container">
                             <table class="grades-table">
                                 <thead>
+                                    <tr>
+                                        <th colspan="4" class="semester-header">
+                                            الفصل الدراسي الأول
+                                            <span class="semester-percentage">{{
+                                                percentage_by_year[year]['first_semester'] }}%</span>
+                                        </th>
+                                    </tr>
                                     <tr>
                                         <th>المادة</th>
                                         <th>الدرجة</th>
@@ -79,13 +257,47 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% if grades|length == 0 %}
+                                    {% if semesters.first_semester|length == 0 %}
                                     <tr>
-                                        <td colspan="4" class="no-grades">لم يتم دفع كامل الرسوم او لم تظهر النتيجة لهذة
-                                            السنة الدراسيه</td>
+                                        <td colspan="4" class="no-grades">لا توجد بيانات للفصل الدراسي الأول</td>
                                     </tr>
                                     {% else %}
-                                    {% for grade in grades %}
+                                    {% for grade in semesters.first_semester %}
+                                    <tr class="animate-fade-in">
+                                        <td>{{ grade.course_name }}</td>
+                                        <td>{{ grade.total_score }}/{{ grade.max_score }}</td>
+                                        <td>{{ grade.grade }}</td>
+                                        <td>{{ grade.percentage }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="semester-table-container" id="third-year-second-semester">
+                            <table class="grades-table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="4" class="semester-header">
+                                            الفصل الدراسي الثاني
+                                            <span class="semester-percentage">{{
+                                                percentage_by_year[year]['second_semester'] }}%</span>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>المادة</th>
+                                        <th>الدرجة</th>
+                                        <th>التقدير</th>
+                                        <th>النسبة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if semesters.second_semester|length == 0 %}
+                                    <tr>
+                                        <td colspan="4" class="no-grades">لا توجد بيانات للفصل الدراسي الثاني</td>
+                                    </tr>
+                                    {% else %}
+                                    {% for grade in semesters.second_semester %}
                                     <tr class="animate-fade-in">
                                         <td>{{ grade.course_name }}</td>
                                         <td>{{ grade.total_score }}/{{ grade.max_score }}</td>

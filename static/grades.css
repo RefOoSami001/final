@@ -632,113 +632,171 @@ body {
 }
 
 .year-table-container {
-    margin-bottom: 1.5rem;
-    border-radius: 12px;
-    overflow: hidden;
+    margin-bottom: 40px;
+    background: var(--background);
+    border-radius: 18px;
     box-shadow: var(--shadow-md);
-    transition: transform 0.3s ease;
-    background: white;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+    padding: 0 0 24px 0;
+    transition: box-shadow 0.3s;
 }
 
 .year-table-container:hover {
-    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 
 .year-header {
     background: var(--primary-color);
-    color: white;
-    padding: 0.8rem 1.2rem;
+    border-radius: 18px 18px 0 0;
+    padding: 28px 32px 18px 32px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    position: relative;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(26, 115, 232, 0.07);
 }
 
 .year-title {
     display: flex;
+    flex-direction: row-reverse;
     align-items: center;
     justify-content: space-between;
+    gap: 40px;
     width: 100%;
 }
 
 .year-name {
-    font-size: 1.4rem;
-    font-weight: 500;
-    color: white;
-    text-align: right;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(26, 115, 232, 0.12);
+    margin-left: auto;
 }
 
 .year-percentage {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 0.5rem 1.5rem;
-    border-radius: 8px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--primary-dark);
+    padding: 8px 22px;
+    border-radius: 12px;
+    margin-right: auto;
+    margin-left: 0;
+    box-shadow: 0 2px 8px rgba(26, 115, 232, 0.10);
+}
+
+.year-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: flex-start;
+    padding: 24px 32px 0 32px;
+}
+
+.semester-table-container {
+    flex: 1 1 350px;
+    min-width: 320px;
+    background: var(--surface);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 0;
+    padding: 18px 18px 12px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.semester-table-container h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.semester-percentage {
     font-size: 1.1rem;
-    font-weight: 500;
-    min-width: 100px;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+    color: var(--success);
+    background: #e6f4ea;
+    padding: 4px 14px;
+    border-radius: 8px;
+    margin-right: 10px;
 }
 
 .grades-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin: 1rem 0;
-}
-
-.grades-table th,
-.grades-table td {
-    padding: 1rem;
-    text-align: right;
-    border-bottom: 1px solid var(--border);
+    margin-top: 0;
+    margin-bottom: 0;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(60, 64, 67, 0.07);
 }
 
 .grades-table th {
+    font-size: 1.05rem;
     background: var(--primary-light);
-    font-weight: 500;
-    color: var(--text-color);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.grades-table tr:hover td {
-    background: var(--primary-light);
+    color: var(--primary-color);
+    font-weight: 700;
 }
 
 .grades-table td {
-    color: var(--text-color);
+    font-size: 1rem;
 }
 
 .no-grades {
-    text-align: center;
-    color: var(--text-light);
-    padding: 2rem;
-    font-size: 1.1rem;
-    background: var(--surface);
+    color: var(--error);
+    background: #fff0f0;
     border-radius: 8px;
-    margin: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 24px 0;
 }
 
-.table-container {
-    padding: 1rem;
-}
+@media (max-width: 900px) {
+    .year-content {
+        flex-direction: column;
+        gap: 18px;
+        padding: 18px 8px 0 8px;
+    }
 
-@media (max-width: 768px) {
     .year-header {
-        padding: 0.7rem 1rem;
+        padding: 18px 12px 12px 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .year-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .year-title {
+        flex-direction: row-reverse;
+        align-items: center;
+        gap: 16px;
     }
 
     .year-name {
-        font-size: 1.1rem;
+        font-size: 1.3rem;
+        margin-left: 0;
     }
 
     .year-percentage {
-        padding: 0.3rem 1rem;
-        font-size: 0.95rem;
-        min-width: 80px;
+        font-size: 1.1rem;
+        padding: 6px 12px;
+        margin-right: 0;
+    }
+
+    .semester-table-container {
+        min-width: 0;
+        padding: 10px 4px 8px 4px;
+    }
+
+    .grades-table th,
+    .grades-table td {
+        padding: 10px 6px;
     }
 }
