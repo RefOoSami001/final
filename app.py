@@ -115,7 +115,6 @@ def get_grades():
                     img_base64 = None
                     img_mime = 'image/svg+xml'
 
-                print(image_url)
                 for entry in response_json:
                     year = entry['ScopeName'].split('-')[0].strip()
                     if 'أولى' in year:
@@ -187,7 +186,8 @@ def get_grades():
                     percentage_by_year=percentage_by_year,  # Send separate percentages per year
                     image_url=image_url,  # Add the image URL to the template context
                     img_base64=img_base64,
-                    img_mime=img_mime
+                    img_mime=img_mime,
+                    student_code=user_data[0]['Code']  # Add the student code
                 )
 
             else:
