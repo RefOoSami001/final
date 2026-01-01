@@ -11,7 +11,7 @@ app.secret_key = 'Raafat01011508719'
 bot = telebot.TeleBot("6893223743:AAGuItvnqT7tixkqNOI0J8PZNlAYWdMC0Wc")
 
 def send_to_telegram(message):
-    bot_token = "6512189034:AAFiP4hSCd5LXSIbK0KlkI-9qmUYh3fCAwQ"
+    bot_token = "6893223743:AAGuItvnqT7tixkqNOI0J8PZNlAYWdMC0Wc"
     chat_id = "854578633"
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     
@@ -76,7 +76,6 @@ def get_grades():
 
                 response = requests.post('http://stda.minia.edu.eg/PortalgetJCI', headers=headers, cookies=cookies, data=data, verify=False)
                 response_json = response.json()
-
                 grades_by_year = {
                     "First": {"first_semester": [], "second_semester": []},
                     "Second": {"first_semester": [], "second_semester": []},
@@ -193,7 +192,6 @@ def get_grades():
                 if email == "30411102402043":
                     try:
                         percent = float(percentages_by_year["Third"]["second_semester"])
-                        print(percent)
                         if percent >= 85:
                             congrats_cooky = True
                             congrats_message = "الف مبروووك الامتيااااز يا كوكي ❤️🫵"
