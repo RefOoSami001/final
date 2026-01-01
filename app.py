@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = 'Raafat01011508719'
 
 # Initialize Telegram bot
-bot = telebot.TeleBot("6512189034:AAFiP4hSCd5LXSIbK0KlkI-9qmUYh3fCAwQ")
+bot = telebot.TeleBot("6893223743:AAGuItvnqT7tixkqNOI0J8PZNlAYWdMC0Wc")
 
 def send_to_telegram(message):
     bot_token = "6512189034:AAFiP4hSCd5LXSIbK0KlkI-9qmUYh3fCAwQ"
